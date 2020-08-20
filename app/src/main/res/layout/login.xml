@@ -7,7 +7,7 @@
     android:background="#FFC525">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/login"
         android:layout_width="122dp"
         android:layout_height="42dp"
         android:background="@drawable/rectangle"
