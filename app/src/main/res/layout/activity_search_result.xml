@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFC525"
+    android:background="#ffffff"
     android:textAlignment="center">
 
     <Button
@@ -22,21 +22,21 @@
         app:layout_constraintTop_toTopOf="@+id/search_bar2"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
+    <EditText
         android:id="@+id/search_bar2"
         android:layout_width="214dp"
         android:layout_height="55dp"
-        android:background="@drawable/rectangle"
+        android:background="@drawable/search2"
         android:gravity="center"
 
         android:text="TextView"
         android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.39"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.087"
+        app:layout_constraintVertical_bias="0.023"
         tools:ignore="RtlCompat" />
 
     <fragment
@@ -46,8 +46,17 @@
         android:layout_height="325dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar2"
-        app:layout_constraintVertical_bias="0.14"
+        app:layout_constraintVertical_bias="0.053"
         tools:context=".searchResult"
-        tools:layout_editor_absoluteX="-16dp" />
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ListView
+        android:id="@+id/listViewCurrencies"
+        android:layout_width="match_parent"
+        android:layout_height="287dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map"
+        app:layout_constraintVertical_bias="0.589"
+        tools:layout_editor_absoluteX="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

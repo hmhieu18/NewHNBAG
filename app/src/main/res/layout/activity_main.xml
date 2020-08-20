@@ -9,36 +9,25 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/eat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="80dp"
-        android:onClick="eatClicked"
-        android:text="eat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
-
-    <Button
-        android:id="@+id/drinks"
+        android:id="@+id/savedplaces"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:onClick="drinksClicked"
-        android:text="drinks"
+        android:background="@drawable/savedplace"
+        android:onClick="savedPlaceClicked"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.288"
+        app:layout_constraintHorizontal_bias="0.292"
         app:layout_constraintStart_toEndOf="@+id/eat"
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
 
     <Button
-        android:id="@+id/favorite"
+        android:id="@+id/group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="88dp"
         android:layout_marginTop="28dp"
-        android:onClick="favoriteClicked"
-        android:text="Favorite"
+        android:background="@drawable/group"
+        android:onClick="groupClicked"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eat" />
 
@@ -47,12 +36,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
+        android:background="@drawable/camera"
         android:onClick="photoClicked"
-        android:text="photo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.288"
-        app:layout_constraintStart_toEndOf="@+id/favorite"
-        app:layout_constraintTop_toBottomOf="@+id/drinks" />
+        app:layout_constraintHorizontal_bias="0.292"
+        app:layout_constraintStart_toEndOf="@+id/group"
+        app:layout_constraintTop_toBottomOf="@+id/savedplaces" />
+
+    <Button
+        android:id="@+id/eat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/eat"
+        android:onClick="eatClicked"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
 
     <Button
         android:id="@+id/search"

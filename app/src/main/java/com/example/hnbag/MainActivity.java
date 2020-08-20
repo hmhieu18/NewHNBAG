@@ -42,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
     public void photoClicked(View view) {
     }
 
-    public void favoriteClicked(View view) {
+    public void groupClicked(View view) {
     }
 
-    public void drinksClicked(View view) {
+    public void savedPlaceClicked(View view) {
     }
 
     public void eatClicked(View view) {
