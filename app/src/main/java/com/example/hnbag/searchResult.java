@@ -2,7 +2,9 @@ package com.example.hnbag;
 
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,17 +16,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class searchResult extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
+    private EditText search_bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        initComponent();
     }
 
+    private void initComponent() {
+        search_bar=(EditText) findViewById(R.id.search_bar2);
+        Intent intent = getIntent();
+        search_bar.setText(intent.getStringExtra("query"));
+    }
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
