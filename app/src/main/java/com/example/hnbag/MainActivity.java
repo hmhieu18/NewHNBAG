@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button search;
     private EditText search_bar;
     private ImageView imageView;
+    public static Profile profile = new Profile();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         photo = (Button) findViewById(R.id.eat);
         search_bar = (EditText) findViewById(R.id.search_bar);
         search = (Button) findViewById(R.id.search);
-
 
 
         search_bar.setOnKeyListener(new View.OnKeyListener() {
@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void searchClicked(View view) {
         Intent myIntent = new Intent(MainActivity.this, searchResult.class);
-        myIntent.putExtra("query", String.valueOf(search_bar.getText())); //Optional parameters
-        Log.d("query", String.valueOf(search_bar.getText()));
+        myIntent.putExtra("query", String.valueOf(search_bar.getText()));
         MainActivity.this.startActivity(myIntent);
     }
 
