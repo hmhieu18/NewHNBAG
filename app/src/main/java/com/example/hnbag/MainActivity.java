@@ -40,9 +40,13 @@ public class MainActivity extends AppCompatActivity {
         eat = (Button) findViewById(R.id.eat);
         drinks = (Button) findViewById(R.id.eat);
         favorite = (Button) findViewById(R.id.eat);
+
         photo = (Button) findViewById(R.id.eat);
         search_bar = (EditText) findViewById(R.id.search_bar);
         search = (Button) findViewById(R.id.search);
+
+        
+
         search_bar.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     public void searchClicked(View view) {
@@ -75,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void eatClicked(View view) {
-
+        Intent myIntent = new Intent(MainActivity.this, FavoriteFood.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
     @Override
