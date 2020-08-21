@@ -33,14 +33,7 @@ public class Start extends AppCompatActivity {
     }
 
     public void logInClicked(View view) {
-//        Intent myIntent = new Intent(Start.this, LogIn.class);
-//        Start.this.startActivity(myIntent);
-        try {
-            Profile.setUsername("minhhieu2214");
-            Profile.password = "1234";
-            LogIn.checkLogIn();
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
-        }
+        Intent myIntent = new Intent(Start.this, LogIn.class);
+        Start.this.startActivity(myIntent);
     }
 }

@@ -3,35 +3,60 @@ package com.example.hnbag;
 import java.util.ArrayList;
 
 public class Profile {
-    public static ArrayList<Food> favoriteFoods;
-    public static String username;
-    public static String password;
-    public static String token;
-    public static String Id;
-    public static ArrayList<Root.Results> favoritePlaces;
-    public static ArrayList<Food> getFavoriteFoods() {
+    public ArrayList<Food> favoriteFoods=new ArrayList<>();
+    public String username;
+    public String json_favorite_places;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String sessionToken) {
+        this.sessionToken = sessionToken;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public String password;
+    public String sessionToken;
+    public String _id;
+    public ArrayList<Root.Results> favoritePlaces=new ArrayList<>();
+
+    public ArrayList<Food> getFavoriteFoods() {
         return favoriteFoods;
     }
 
-    public static String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public static ArrayList<Root.Results> getFavoritePlaces() {
+    public ArrayList<Root.Results> getFavoritePlaces() {
         return favoritePlaces;
     }
 
 
-
-    public static void setFavoriteFoods(ArrayList<Food> favoriteFoods) {
-        Profile.favoriteFoods = favoriteFoods;
+    public void setFavoriteFoods(ArrayList<Food> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
     }
 
-    public static void setUsername(String username) {
-        Profile.username = username;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public static void setFavoritePlaces(ArrayList<Root.Results> favoritePlaces) {
-        Profile.favoritePlaces = favoritePlaces;
+    public void setFavoritePlaces(ArrayList<Root.Results> favoritePlaces) {
+        this.favoritePlaces = favoritePlaces;
     }
 }

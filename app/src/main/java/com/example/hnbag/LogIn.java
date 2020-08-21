@@ -3,10 +3,17 @@ package com.example.hnbag;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,45 +29,64 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 public class LogIn extends AppCompatActivity {
+    private EditText username;
+    private TextView password;
+    private boolean isvalid = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
+        initComponent();
     }
 
-    public static void checkLogIn() throws IOException, JSONException {
+    private void initComponent() {
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+    }
+
+    public void checkLogIn() throws IOException, JSONException {
         new retrieveData().execute();
     }
 
-    static class retrieveData extends AsyncTask<Void, Void, Void> {
+    public void logInClicked(View view) {
+        MainActivity.profile.setUsername(String.valueOf(username.getText()));
+        MainActivity.profile.setPassword(String.valueOf(password.getText()));
+        try {
+            checkLogIn();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "INVALID USERNAME OR PASSWORD", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    class retrieveData extends AsyncTask<Void, Void, Void> {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                String myURL = "https://api.appery.io/rest/1/db/users/5f3fd8cc0f0d31746334124c";
+                String myURL = "https://api.appery.io/rest/1/db/login";
                 URL obj = null;
                 obj = new URL(myURL);
 
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-                con.setRequestMethod("GET");
+                con.setRequestMethod("POST");
                 con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
-                con.setRequestProperty("X-Appery-Session-Token", "62f5bddb-195b-4883-986b-76b90532de19");
-//                con.setRequestProperty("Content-Type", "application/json");
+//                con.setRequestProperty("X-Appery-Session-Token", "62f5bddb-195b-4883-986b-76b90532de19");
+                con.setRequestProperty("Content-Type", "application/json");
 
-//                con.setDoOutput(true);
-//                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-//                JSONObject json = new JSONObject();
-//                json.put("username", Profile.username);
-//                json.put("password", Profile.password);
-//                wr.writeBytes(json.toString());
-//                wr.flush();
-//                wr.close();
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                JSONObject json = new JSONObject();
+                json.put("username", MainActivity.profile.username);
+                json.put("password", MainActivity.profile.password);
+                wr.writeBytes(json.toString());
+                wr.flush();
+                wr.close();
 
                 int responseCode = con.getResponseCode();
                 Log.d("Response Code : ", Integer.valueOf(responseCode).toString());
-
                 BufferedReader iny = new BufferedReader(
                         new InputStreamReader(con.getInputStream()));
                 String output;
@@ -72,10 +98,26 @@ public class LogIn extends AppCompatActivity {
                 iny.close();
                 //printing result from response
                 Log.d("response", response.toString());
-            } catch (IOException e) {
+                MainActivity.profile = new Gson().fromJson(response.toString(), Profile.class);
+                if (MainActivity.profile.get_id() != null)
+                    isvalid = true;
+                else isvalid = false;
+            } catch (IOException |
+                    JSONException e) {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            //get favorite
+            if (isvalid) {
+                Intent myIntent = new Intent(LogIn.this, MainActivity.class);
+                LogIn.this.startActivity(myIntent);
+                finish();
+            } else
+                Toast.makeText(LogIn.this, "INVALID USERNAME OR PASSWORD", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +45,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -57,14 +66,14 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private EditText search_bar;
     private String query;
-    private Location lastKnownLocation;
+    private Location lastKnownLocation = new Location("");
     private ListView _listViewResult;
     private ArrayList<Root.Results> _resultsList;
     private ArrayList<Root.Results> favoritePlaces;
     public ResultArrayAdapter _resultArrayAdapter;
     private boolean isDone = false;
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
-    private String FAVORITE_FILE = "favorite.json";
+    private String FAVORITE_FILE = MainActivity.profile.get_id();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +94,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         getLastKnownLocation();
         initComponent();
+        SystemClock.sleep(2000);
         if (!query.equals("")) new retrieveData().execute();
     }
 
@@ -262,6 +272,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     private void addPlaceToFavorite(Context context, int position) {
         favoritePlaces.add(_resultsList.get(position));
         saveFavoriteToFile(context);
+        saveFavoriteToDatabase(context);
     }
 
     private void saveFavoriteToFile(Context context) {
@@ -270,4 +281,56 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         JsonHandling.writeToFile(json, context, FAVORITE_FILE);
     }
 
+    private void saveFavoriteToDatabase(Context context) {
+        new updateToDatabase().execute();
+    }
+
+    class updateToDatabase extends AsyncTask<Void, Void, Void> {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Gson gson = new GsonBuilder().create();
+                String jsonFavoritePlaces = gson.toJson(favoritePlaces);
+                Log.d("json", jsonFavoritePlaces);
+                String myURL = "https://api.appery.io/rest/1/db/users/" +
+                        MainActivity.profile.get_id();
+                URL obj = null;
+                obj = new URL(myURL);
+
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                con.setRequestMethod("PUT");
+                con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
+                con.setRequestProperty("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
+                con.setRequestProperty("Content-Type", "application/json");
+
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                JSONObject json = new JSONObject();
+                json.put("json_favorite_places", jsonFavoritePlaces);
+                wr.writeBytes(json.toString());
+                wr.flush();
+                wr.close();
+
+                int responseCode = con.getResponseCode();
+                Log.d("Response Code : ", Integer.valueOf(responseCode).toString());
+                BufferedReader iny = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String output;
+                StringBuffer response = new StringBuffer();
+
+                while ((output = iny.readLine()) != null) {
+                    response.append(output);
+                }
+                iny.close();
+                //printing result from response
+                Log.d("response", response.toString());
+            } catch (IOException |
+                    JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 }

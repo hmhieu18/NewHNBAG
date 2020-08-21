@@ -24,20 +24,20 @@ public class FavoriteFood extends AppCompatActivity {
 
 
     private void loadData() {
-        Profile.favoriteFoods = new ArrayList<>();
+        MainActivity.profile.favoriteFoods = new ArrayList<>();
         Food f1 = new Food("Món ăn 1", "Cua rang me", R.drawable.doan1);
         Food f2 = new Food("Món ăn 2", "Món Việt", R.drawable.doan2);
         Food f3 = new Food("Món ăn 3", "Món Thái", R.drawable.doan3);
         Food f4 = new Food("Món ăn 4", "Món Nhật", R.drawable.doan4);
-        Profile.favoriteFoods.add(f1);
-        Profile.favoriteFoods.add(f2);
-        Profile.favoriteFoods.add(f3);
-        Profile.favoriteFoods.add(f4);
+        MainActivity.profile.favoriteFoods.add(f1);
+        MainActivity.profile.favoriteFoods.add(f2);
+        MainActivity.profile.favoriteFoods.add(f3);
+        MainActivity.profile.favoriteFoods.add(f4);
     }
 
     private void initComponents() {
         _gridView = findViewById(R.id.gridview_food);
-        _adapter = new GridViewArrayAdapter(this, R.layout.gridview_food_items, Profile.favoriteFoods);
+        _adapter = new GridViewArrayAdapter(this, R.layout.gridview_food_items, MainActivity.profile.favoriteFoods);
         _gridView.setAdapter(_adapter);
     }
 }
