@@ -3,7 +3,11 @@ package com.example.hnbag;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
 public class JsonHandling {
@@ -16,5 +20,18 @@ public class JsonHandling {
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
+    }
+    public static String readString(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream into = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        for (int n; 0 < (n = inputStream.read(buf)); ) {
+            into.write(buf, 0, n);
+        }
+        into.close();
+        return new String(into.toByteArray(), "UTF-8"); // Or whatever encoding
+    }
+    public static InputStream readJsonFromStorage(Context context, String fileName) throws FileNotFoundException {
+        FileInputStream fileInputStream = context.openFileInput(fileName);
+        return fileInputStream;
     }
 }

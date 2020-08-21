@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void savedPlaceClicked(View view) {
+        Intent myIntent = new Intent(MainActivity.this, FavoritePlaces.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
     public void eatClicked(View view) {
