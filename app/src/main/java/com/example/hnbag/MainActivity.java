@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         search_bar = (EditText) findViewById(R.id.search_bar);
         search = (Button) findViewById(R.id.search);
 
-        
+
 
         search_bar.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
