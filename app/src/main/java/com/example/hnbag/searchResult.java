@@ -135,7 +135,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void displayMarkers() {
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.doan1);
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.marker);
         bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth() / 4, bmp.getHeight() / 4, false);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
         for (Root.Results i : _resultsList) {

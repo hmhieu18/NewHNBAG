@@ -53,7 +53,6 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
     private String query;
     private Location lastKnownLocation;
     private ListView _listViewResult;
-    private ArrayList<Root.Results> favoritePlaces;
     public ResultArrayAdapter _resultArrayAdapter;
     private boolean isDone = false;
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
@@ -78,8 +77,8 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
         try {
             String json = JsonHandling.readString(JsonHandling.readJsonFromStorage(this, FAVORITE_FILE));
             Log.d("json", json);
-            favoritePlaces = new Gson().fromJson(json, listType);
-            Log.d("size", Integer.valueOf(favoritePlaces.size()).toString());
+          Profile.favoritePlaces = new Gson().fromJson(json, listType);
+            Log.d("size", Integer.valueOf(Profile.favoritePlaces.size()).toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,7 +102,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 return true;
             }
         });
-        _resultArrayAdapter = new ResultArrayAdapter(FavoritePlaces.this, R.layout.place_item, favoritePlaces);
+        _resultArrayAdapter = new ResultArrayAdapter(FavoritePlaces.this, R.layout.place_item, Profile.favoritePlaces);
         _listViewResult.setAdapter(_resultArrayAdapter);
     }
 
@@ -125,7 +124,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.favmarker);
         bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth() / 4, bmp.getHeight() / 4, false);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
-        for (Root.Results i : favoritePlaces) {
+        for (Root.Results i : Profile.favoritePlaces) {
             Marker temp = mMap.addMarker(new MarkerOptions()
                     .position(i.getGeometry().getLocation().getLatLng())
                     .title(i.getName())
@@ -137,10 +136,10 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void moveCameraToMarker(int i) {
-        if (!favoritePlaces.isEmpty()) {
+        if (!Profile.favoritePlaces.isEmpty()) {
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(favoritePlaces.get(i).getGeometry().getLocation().getLatLng())     // Sets the center of the map to Mountain View
+                    .target(Profile.favoritePlaces.get(i).getGeometry().getLocation().getLatLng())     // Sets the center of the map to Mountain View
                     .zoom(15)                           // Sets the zoom
                     .bearing(90)                        // Sets the orientation of the camera to east
                     .tilt(30)                           // Sets the tilt of the camera to 30 degrees
@@ -199,7 +198,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                                     "10.7726045,106.6989436" +
 //                lastKnownLocation.getLatitude() + lastKnownLocation.getLongitude() +
                                     "&daddr=" +
-                                    favoritePlaces.get(i).getGeometry().getLocation().getLat() + ',' + favoritePlaces.get(i).getGeometry().getLocation().getLng()));
+                                    Profile.favoritePlaces.get(i).getGeometry().getLocation().getLat() + ',' + Profile.favoritePlaces.get(i).getGeometry().getLocation().getLng()));
                     startActivity(intent);
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -211,7 +210,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
 
     private void saveFavoriteToFile(Context context) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(favoritePlaces);
+        String json = gson.toJson(Profile.favoritePlaces);
         JsonHandling.writeToFile(json, context, FAVORITE_FILE);
     }
 
