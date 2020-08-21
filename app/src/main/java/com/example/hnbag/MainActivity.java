@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         photo = (Button) findViewById(R.id.eat);
         search_bar = (EditText) findViewById(R.id.search_bar);
         search = (Button) findViewById(R.id.search);
-        imageView = (ImageView) findViewById(R.id.imageView);
         search_bar.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void searchClicked(View view) {
         Intent myIntent = new Intent(MainActivity.this, searchResult.class);
-        myIntent.putExtra("query", search_bar.getText()); //Optional parameters
+        myIntent.putExtra("query", String.valueOf(search_bar.getText())); //Optional parameters
+        Log.d("query", String.valueOf(search_bar.getText()));
         MainActivity.this.startActivity(myIntent);
     }
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        imageView.setImageBitmap(selectedImage);
+//                        imageView.setImageBitmap(selectedImage);
                     }
 
                     break;
