@@ -41,6 +41,7 @@ public class LogIn extends AppCompatActivity {
     }
 
     private void initComponent() {
+        MainActivity.profile=new Profile();
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
     }

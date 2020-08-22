@@ -23,6 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".GroupDisplay"></activity>
         <activity android:name=".SignUp" />
         <activity android:name=".LogIn" />
         <!--
@@ -45,7 +46,7 @@
             android:label="@string/title_activity_search_result" />
         <activity android:name=".FavoriteFood" />
         <activity android:name=".AddFood" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity android:name=".Start">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

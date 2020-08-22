@@ -49,10 +49,10 @@ public class FavoriteFood extends AppCompatActivity {
         Food f2 = new Food( "Món Việt", R.drawable.doan2);
         Food f3 = new Food( "Món Thái", R.drawable.doan3);
         Food f4 = new Food( "Món Nhật", R.drawable.doan4);
-        _favoritefood.add(f1);
-        _favoritefood.add(f2);
-        _favoritefood.add(f3);
-        _favoritefood.add(f4);
+        MainActivity.profile.favoriteFoods.add(f1);
+        MainActivity.profile.favoriteFoods.add(f2);
+        MainActivity.profile.favoriteFoods.add(f3);
+        MainActivity.profile.favoriteFoods.add(f4);
     }
 
     private void initComponents() {

@@ -212,6 +212,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
 
     public void search2Clicked(View view) {
         query = String.valueOf(search_bar.getText());
+        initComponent();
         new retrieveData().execute();
     }
 
@@ -304,7 +305,6 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
                 con.setRequestMethod("PUT");
                 con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
                 con.setRequestProperty("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
-                Log.d("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
                 con.setRequestProperty("Content-Type", "application/json");
                 con.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());

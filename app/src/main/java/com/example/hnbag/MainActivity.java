@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button search;
     private EditText search_bar;
     private ImageView imageView;
-    public static Profile profile = new Profile();
+    public static Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
