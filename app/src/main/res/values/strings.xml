@@ -2,4 +2,6 @@
     <string name="app_name">HNBAG</string>
     <string name="title_activity_search_result">Map</string>
     <string name="title_activity_favorite_places">Map</string>
+
+    <string name="menu_item_comback">Comeback</string>
 </resources>

@@ -40,15 +40,17 @@ public class AddFood extends AppCompatActivity implements AdapterView.OnItemClic
     }
 
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Food FoodAdd=_favoritefoodAdd.get(i);
+
         String DesAdd=FoodAdd.getDescription();
         int LogoAdd=FoodAdd.getLogoID();
 
         Food s=new Food(DesAdd,LogoAdd);
-        (FavoriteFood._favoritefood).add(s);
+
+        //(FavoriteFood._favoritefood).add(s);
+        MainActivity.profile.favoriteFoods.add(s);
         _favoritefoodAdd.remove(i);
         (_adapterAdd).notifyDataSetChanged();
     }
