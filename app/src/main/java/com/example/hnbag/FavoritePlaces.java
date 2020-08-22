@@ -249,7 +249,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 MainActivity.profile=(new Gson()).fromJson(response.toString(), Profile.class);
                 Type listType = new TypeToken<ArrayList<Root.Results>>() {
                 }.getType();
-                MainActivity.profile.favoritePlaces = new Gson().fromJson(MainActivity.profile.json_favorite_places, listType);
+                MainActivity.profile.favoritePlaces = new Gson().fromJson(JsonHandling.base64Decode(MainActivity.profile.json_favorite_places), listType);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,11 +54,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.transform.Result;
 
@@ -69,7 +73,6 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     private Location lastKnownLocation = new Location("");
     private ListView _listViewResult;
     private ArrayList<Root.Results> _resultsList;
-    private ArrayList<Root.Results> favoritePlaces;
     public ResultArrayAdapter _resultArrayAdapter;
     private boolean isDone = false;
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
@@ -104,7 +107,6 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         search_bar = (EditText) findViewById(R.id.search_bar2);
         search_bar.setText(query);
         _resultsList = new ArrayList<>();
-        favoritePlaces = new ArrayList<>();
         _listViewResult = findViewById(R.id.listViewResults);
         _listViewResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -270,14 +272,14 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addPlaceToFavorite(Context context, int position) {
-        favoritePlaces.add(_resultsList.get(position));
+        MainActivity.profile.favoritePlaces.add(_resultsList.get(position));
         saveFavoriteToFile(context);
         saveFavoriteToDatabase(context);
     }
 
     private void saveFavoriteToFile(Context context) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(favoritePlaces);
+        String json = gson.toJson(MainActivity.profile.favoritePlaces);
         JsonHandling.writeToFile(json, context, FAVORITE_FILE);
     }
 
@@ -291,8 +293,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         protected Void doInBackground(Void... params) {
             try {
                 Gson gson = new GsonBuilder().create();
-                String jsonFavoritePlaces = gson.toJson(favoritePlaces);
-                Log.d("json", jsonFavoritePlaces);
+                String jsonFavoritePlaces = gson.toJson(MainActivity.profile.favoritePlaces);
                 String myURL = "https://api.appery.io/rest/1/db/users/" +
                         MainActivity.profile.get_id();
                 URL obj = null;
@@ -303,12 +304,12 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
                 con.setRequestMethod("PUT");
                 con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
                 con.setRequestProperty("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
+                Log.d("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
                 con.setRequestProperty("Content-Type", "application/json");
-
                 con.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 JSONObject json = new JSONObject();
-                json.put("json_favorite_places", jsonFavoritePlaces);
+                json.put("json_favorite_places", JsonHandling.base64Encode(jsonFavoritePlaces));
                 wr.writeBytes(json.toString());
                 wr.flush();
                 wr.close();

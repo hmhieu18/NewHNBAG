@@ -99,6 +99,7 @@ public class LogIn extends AppCompatActivity {
                 //printing result from response
                 Log.d("response", response.toString());
                 MainActivity.profile = new Gson().fromJson(response.toString(), Profile.class);
+                Log.d("token", MainActivity.profile.getSessionToken());
                 if (MainActivity.profile.get_id() != null)
                     isvalid = true;
                 else isvalid = false;
