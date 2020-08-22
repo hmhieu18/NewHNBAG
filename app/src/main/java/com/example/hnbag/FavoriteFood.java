@@ -15,16 +15,12 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 public class FavoriteFood extends AppCompatActivity {
-<<<<<<< HEAD
     public static GridView _gridView;
     public static  GridViewArrayAdapter _adapter;
     public static  ArrayList<Food> _favoritefood;
     private Button btaddfood;
     public static int check=0;
-=======
-    private GridView _gridView;
-    private GridViewArrayAdapter _adapter;
->>>>>>> 61149e5d9cee730477597080ab0341ef6cca04b4
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorite_food);
@@ -48,8 +44,7 @@ public class FavoriteFood extends AppCompatActivity {
 
 
     private void loadData() {
-<<<<<<< HEAD
-        _favoritefood = new ArrayList<>();
+        MainActivity.profile.favoriteFoods = new ArrayList<>();
         Food f1 = new Food("Cua rang me", R.drawable.doan1);
         Food f2 = new Food( "Món Việt", R.drawable.doan2);
         Food f3 = new Food( "Món Thái", R.drawable.doan3);
@@ -58,17 +53,6 @@ public class FavoriteFood extends AppCompatActivity {
         _favoritefood.add(f2);
         _favoritefood.add(f3);
         _favoritefood.add(f4);
-=======
-        MainActivity.profile.favoriteFoods = new ArrayList<>();
-        Food f1 = new Food("Món ăn 1", "Cua rang me", R.drawable.doan1);
-        Food f2 = new Food("Món ăn 2", "Món Việt", R.drawable.doan2);
-        Food f3 = new Food("Món ăn 3", "Món Thái", R.drawable.doan3);
-        Food f4 = new Food("Món ăn 4", "Món Nhật", R.drawable.doan4);
-        MainActivity.profile.favoriteFoods.add(f1);
-        MainActivity.profile.favoriteFoods.add(f2);
-        MainActivity.profile.favoriteFoods.add(f3);
-        MainActivity.profile.favoriteFoods.add(f4);
->>>>>>> 61149e5d9cee730477597080ab0341ef6cca04b4
     }
 
     private void initComponents() {
