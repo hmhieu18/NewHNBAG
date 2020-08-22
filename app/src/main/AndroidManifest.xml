@@ -42,7 +42,14 @@
         <activity
             android:name=".searchResult"
             android:label="@string/title_activity_search_result" />
+<<<<<<< HEAD
+        <activity android:name=".login" />
+        <activity android:name=".FavoriteFood" />
+        <activity android:name=".AddFood"/>
+        <activity android:name=".MainActivity">
+=======
         <activity android:name=".Start">
+>>>>>>> 61149e5d9cee730477597080ab0341ef6cca04b4
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

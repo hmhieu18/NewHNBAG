@@ -26,7 +26,6 @@
         android:id="@+id/search_bar2"
         android:layout_width="214dp"
         android:layout_height="55dp"
-        android:background="@drawable/search2"
         android:gravity="center"
 
         android:maxLines="1"

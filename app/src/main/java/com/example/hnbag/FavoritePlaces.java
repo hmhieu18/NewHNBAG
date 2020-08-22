@@ -133,7 +133,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void displayMarkers() {
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.favmarker);
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.doan1);
         bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth() / 4, bmp.getHeight() / 4, false);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
         for (Root.Results i : MainActivity.profile.favoritePlaces) {

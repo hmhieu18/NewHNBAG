@@ -49,7 +49,21 @@ public class GridViewArrayAdapter extends ArrayAdapter<Food> {
 
         Food food = _food.get(position);
         Bitmap bmp = BitmapFactory.decodeResource(_context.getResources(), food.getLogoID());
-        imageView.setImageBitmap(bmp);
+        Bitmap cropImg;
+        int width = bmp.getWidth();
+        int height = bmp.getHeight();
+        if (width>height)
+        {
+            int crop = (width - height) / 2;
+            cropImg = Bitmap.createBitmap(bmp, crop, 0, height, height);
+        }
+        else
+        {
+            int crop = (height - width) / 2;
+            cropImg = Bitmap.createBitmap(bmp, crop, 0, width, width);
+        }
+
+        imageView.setImageBitmap(cropImg);
         textView.setText(food.getDescription());
 
         return convertView;
