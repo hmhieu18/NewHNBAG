@@ -13,14 +13,15 @@
         android:layout_height="wrap_content"
         android:maxHeight="675dp"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
-
+        tools:layout_editor_absoluteY="1dp"
+        android:id="@+id/listviewGroups">
 
     </ListView>
 
     <Button
-        android:id="@+id/addgroup"
+        android:id="@+id/newgroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="newGroupClicked"
         android:text="New Group" />
 </LinearLayout>

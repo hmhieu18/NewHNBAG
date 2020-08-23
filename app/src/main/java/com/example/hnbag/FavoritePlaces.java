@@ -34,7 +34,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,16 +41,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -59,19 +53,24 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
     private Button search;
     private GoogleMap mMap;
     private EditText search_bar;
-    private String query;
+    private int _position = -1;
     private Location lastKnownLocation;
     private ListView _listViewResult;
-    public ResultArrayAdapter _resultArrayAdapter;
+    public static ResultArrayAdapter _resultArrayAdapter;
     private boolean isDone = false;
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
-    private String FAVORITE_FILE = MainActivity.profile.get_id();
+    private String FAVORITE_FILE = MainActivity.mProfile.get_id();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
-        new updateFromDatabase().execute();
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) _position = extras.getInt("position");
+        }
+        if (_position == -1)
+            new updateFavoritePlacesFromDatabase().execute();
         SystemClock.sleep(1000);
         initComponent();
         getLastKnownLocation();
@@ -80,23 +79,12 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
     }
 
-    private void loadJson() {
-        Type listType = new TypeToken<ArrayList<Root.Results>>() {
-        }.getType();
-        Gson gson = new Gson();
-        try {
-            String json = JsonHandling.readString(JsonHandling.readJsonFromStorage(this, FAVORITE_FILE));
-            Log.d("json", json);
-            MainActivity.profile.favoritePlaces = new Gson().fromJson(json, listType);
-            Log.d("size", Integer.valueOf(MainActivity.profile.favoritePlaces.size()).toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void initComponent() {
         search = (Button) findViewById(R.id.search2);
+        search.setVisibility(View.INVISIBLE);
         search_bar = (EditText) findViewById(R.id.search_bar2);
+        search_bar.setVisibility(View.INVISIBLE);
         _listViewResult = findViewById(R.id.listViewResults);
         _listViewResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -112,8 +100,11 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 return true;
             }
         });
-        if (MainActivity.profile.favoritePlaces.size() != 0) {
-            _resultArrayAdapter = new ResultArrayAdapter(FavoritePlaces.this, R.layout.place_item, MainActivity.profile.favoritePlaces);
+        if (MainActivity.mProfile.favoritePlaces.size() != 0) {
+            if (_position != -1)
+                _resultArrayAdapter = new ResultArrayAdapter(FavoritePlaces.this, R.layout.place_item, MainActivity.mProfile.listGroup.get(_position).commonFavoritePlaces);
+            else
+                _resultArrayAdapter = new ResultArrayAdapter(FavoritePlaces.this, R.layout.place_item, MainActivity.mProfile.favoritePlaces);
             _listViewResult.setAdapter(_resultArrayAdapter);
         }
     }
@@ -136,7 +127,7 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.favmarker);
         bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth() / 4, bmp.getHeight() / 4, false);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
-        for (Root.Results i : MainActivity.profile.favoritePlaces) {
+        for (Results i : MainActivity.mProfile.favoritePlaces) {
             Marker temp = mMap.addMarker(new MarkerOptions()
                     .position(i.getGeometry().getLocation().getLatLng())
                     .title(i.getName())
@@ -148,10 +139,10 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
     }
 
     private void moveCameraToMarker(int i) {
-        if (!MainActivity.profile.favoritePlaces.isEmpty()) {
+        if (!MainActivity.mProfile.favoritePlaces.isEmpty()) {
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
             CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(MainActivity.profile.favoritePlaces.get(i).getGeometry().getLocation().getLatLng())     // Sets the center of the map to Mountain View
+                    .target(MainActivity.mProfile.favoritePlaces.get(i).getGeometry().getLocation().getLatLng())     // Sets the center of the map to Mountain View
                     .zoom(15)                           // Sets the zoom
                     .bearing(90)                        // Sets the orientation of the camera to east
                     .tilt(30)                           // Sets the tilt of the camera to 30 degrees
@@ -176,11 +167,6 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 });
     }
 
-
-    public void search2Clicked(View view) {
-        query = String.valueOf(search_bar.getText());
-    }
-
     private void optionPlace(final Context context, final int i) {
         final CharSequence[] options = {"Add to favorite", "Direction", "Cancel"};
 
@@ -198,10 +184,10 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 } else if (options[item].equals("Direction")) {
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                             Uri.parse("http://maps.google.com/maps?saddr=" +
-                                    "10.7726045,106.6989436" +
-//                lastKnownLocation.getLatitude() + lastKnownLocation.getLongitude() +
+//                                    "10.7726045,106.6989436" +
+                                    lastKnownLocation.getLatitude() + lastKnownLocation.getLongitude() +
                                     "&daddr=" +
-                                    MainActivity.profile.favoritePlaces.get(i).getGeometry().getLocation().getLat() + ',' + MainActivity.profile.favoritePlaces.get(i).getGeometry().getLocation().getLng()));
+                                    MainActivity.mProfile.favoritePlaces.get(i).getGeometry().getLocation().getLat() + ',' + MainActivity.mProfile.favoritePlaces.get(i).getGeometry().getLocation().getLng()));
                     startActivity(intent);
                 } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -213,25 +199,25 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
 
     private void saveFavoriteToFile(Context context) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(MainActivity.profile.favoritePlaces);
+        String json = gson.toJson(MainActivity.mProfile.favoritePlaces);
         JsonHandling.writeToFile(json, context, FAVORITE_FILE);
     }
 
-    class updateFromDatabase extends AsyncTask<Void, Void, Void> {
+    public static class updateFavoritePlacesFromDatabase extends AsyncTask<Void, Void, Void> {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 String myURL = "https://api.appery.io/rest/1/db/users/" +
-                        MainActivity.profile.get_id();
-                URL obj = null;
+                        MainActivity.mProfile.get_id();
+                URL obj;
                 obj = new URL(myURL);
 
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
                 con.setRequestMethod("GET");
                 con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
-                con.setRequestProperty("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
+                con.setRequestProperty("X-Appery-Session-Token", MainActivity.mProfile.getSessionToken());
 
                 int responseCode = con.getResponseCode();
                 Log.d("Response Code : ", Integer.valueOf(responseCode).toString());
@@ -246,10 +232,13 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 iny.close();
                 //printing result from response
                 Log.d("response", response.toString());
-                MainActivity.profile=(new Gson()).fromJson(response.toString(), Profile.class);
-                Type listType = new TypeToken<ArrayList<Root.Results>>() {
+                String token = MainActivity.mProfile.sessionToken;
+                MainActivity.mProfile = (new Gson()).fromJson(response.toString(), mProfile.class);
+                MainActivity.mProfile.sessionToken = token;
+                Type listType = new TypeToken<ArrayList<Results>>() {
                 }.getType();
-                MainActivity.profile.favoritePlaces = new Gson().fromJson(JsonHandling.base64Decode(MainActivity.profile.json_favorite_places), listType);
+                if (MainActivity.mProfile.json_favorite_places != null)
+                    MainActivity.mProfile.favoritePlaces = new Gson().fromJson(JsonHandling.base64Decode(MainActivity.mProfile.json_favorite_places), listType);
             } catch (IOException e) {
                 e.printStackTrace();
             }

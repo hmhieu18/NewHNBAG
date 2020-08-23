@@ -1,10 +1,7 @@
 package com.example.hnbag;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,13 +9,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private Button eat;
@@ -28,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Button search;
     private EditText search_bar;
     private ImageView imageView;
-    public static Profile profile;
+    public static mProfile mProfile = new mProfile();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        (new FavoritePlaces.updateFavoritePlacesFromDatabase()).execute();
     }
 
     public void searchClicked(View view) {
@@ -68,11 +63,14 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.startActivity(myIntent);
     }
 
-    public void photoClicked(View view) {
-        selectImage(this);
+    public void randomClicked(View view) {
+        Intent myIntent = new Intent(MainActivity.this, RandomFood.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
     public void groupClicked(View view) {
+        Intent myIntent = new Intent(MainActivity.this, GroupDisplay.class);
+        MainActivity.this.startActivity(myIntent);
     }
 
     public void savedPlaceClicked(View view) {
@@ -118,32 +116,5 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
-    }
-
-    private void selectImage(Context context) {
-        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Choose your profile picture");
-
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Take Photo")) {
-                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
-
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto, 1);
-
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
     }
 }

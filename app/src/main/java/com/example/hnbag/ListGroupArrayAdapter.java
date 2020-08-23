@@ -3,7 +3,6 @@ package com.example.hnbag;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +15,15 @@ import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.util.List;
 
-public class ResultArrayAdapter extends ArrayAdapter<Results> {
+public class ListGroupArrayAdapter extends ArrayAdapter<Group> {
     private Context _context;
     private int _layoutID;
-    private List<Results> _items;
+    private List<Group> _items;
 
 
-    public ResultArrayAdapter(@NonNull Context context, int resource, @NonNull List<Results> objects) {
+    public ListGroupArrayAdapter(@NonNull Context context, int resource, @NonNull List<Group> objects) {
         super(context, resource, objects);
         _context = context;
         _layoutID = resource;
@@ -39,7 +35,7 @@ public class ResultArrayAdapter extends ArrayAdapter<Results> {
         return _items.size();
     }
 
-    public Results getItem(int position) {
+    public Group getItem(int position) {
         return _items.get(position);
     }
 
@@ -51,15 +47,17 @@ public class ResultArrayAdapter extends ArrayAdapter<Results> {
             convertView = layoutInflater.inflate(_layoutID, null, false);
         }
 
-        ImageView icon = convertView.findViewById(R.id.icon);
-        TextView place_name = convertView.findViewById(R.id.place_name);
-        TextView address = convertView.findViewById(R.id.address);
-        TextView rating = convertView.findViewById(R.id.rating);
-        final Results result = _items.get(position);
-        Picasso.get().load(result.getIcon()).into(icon);
-        place_name.setText(result.getName());
-        address.setText(result.getFormatted_address());
-        rating.setText(result.getRating());
+        ImageView imageView = convertView.findViewById(R.id.icon);
+        TextView textView = convertView.findViewById(R.id.place_name);
+        TextView textViewSub = convertView.findViewById(R.id.address);
+        TextView textViewRating = convertView.findViewById(R.id.rating);
+        final Group group = _items.get(position);
+        Bitmap bmp = BitmapFactory.decodeResource(_context.getResources(), R.drawable.group);
+        imageView.setImageBitmap(bmp);
+        textView.setText(group.getGroupName());
+        textViewSub.setText(group.getUsernames().toString());
+        textViewRating.setText("");
         return convertView;
     }
+
 }

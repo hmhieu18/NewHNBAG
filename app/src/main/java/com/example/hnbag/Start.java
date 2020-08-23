@@ -23,16 +23,16 @@ public class Start extends AppCompatActivity {
     }
 
     private void initComponent() {
-        logIn = findViewById(R.id.login);
-        signUp = findViewById(R.id.signup);
+        logIn = findViewById(R.id.loginstart);
+        signUp = findViewById(R.id.signupstart);
     }
 
-    public void signUpClicked(View view) {
+    public void startSignupClicked(View view) {
         Intent myIntent = new Intent(Start.this, SignUp.class);
         Start.this.startActivity(myIntent);
     }
 
-    public void logInClicked(View view) {
+    public void startLogInClicked(View view) {
         Intent myIntent = new Intent(Start.this, LogIn.class);
         Start.this.startActivity(myIntent);
     }

@@ -25,9 +25,9 @@ public class SearchHandling {
         this._request = _mRequest;
     }
 
-    public ArrayList<Root.Results> search() {
-        ArrayList<Root.Results> ret = new ArrayList<>();
-        Type listType = new TypeToken<ArrayList<Root.Results>>() {
+    public ArrayList<Results> search() {
+        ArrayList<Results> ret = new ArrayList<>();
+        Type listType = new TypeToken<ArrayList<Results>>() {
         }.getType();
         try {
             URL url;

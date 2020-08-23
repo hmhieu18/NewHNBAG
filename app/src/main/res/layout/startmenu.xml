@@ -7,13 +7,13 @@
     android:background="#FFC525">
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/loginstart"
         android:layout_width="122dp"
         android:layout_height="42dp"
         android:background="@drawable/rectangle"
         android:fontFamily="@font/comfortaa"
         android:text="login"
-        android:onClick="logInClicked"
+        android:onClick="startLogInClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -22,13 +22,13 @@
         app:layout_constraintVertical_bias="0.418" />
 
     <Button
-        android:id="@+id/signup"
+        android:id="@+id/signupstart"
         android:layout_width="122dp"
         android:layout_height="42dp"
         android:background="@drawable/rectangle"
         android:fontFamily="@font/comfortaa"
         android:text="signup"
-        android:onClick="signUpClicked"
+        android:onClick="startSignupClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

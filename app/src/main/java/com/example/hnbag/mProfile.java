@@ -2,10 +2,18 @@ package com.example.hnbag;
 
 import java.util.ArrayList;
 
-public class Profile {
-    public ArrayList<Food> favoriteFoods=new ArrayList<>();
+public class mProfile {
+    public String password;
+    public String sessionToken;
+    public String _id;
+    public ArrayList<Results> favoritePlaces = new ArrayList<>();
+    public ArrayList<Food> favoriteFoods = new ArrayList<>();
+    public ArrayList<Group> listGroup = new ArrayList<>();
     public String username;
     public String json_favorite_places;
+    public String json_group;
+    public String json_favorite_foods;
+
     public String getPassword() {
         return password;
     }
@@ -30,10 +38,7 @@ public class Profile {
         this._id = _id;
     }
 
-    public String password;
-    public String sessionToken;
-    public String _id;
-    public ArrayList<Root.Results> favoritePlaces=new ArrayList<>();
+
 
     public ArrayList<Food> getFavoriteFoods() {
         return favoriteFoods;
@@ -43,7 +48,7 @@ public class Profile {
         return username;
     }
 
-    public ArrayList<Root.Results> getFavoritePlaces() {
+    public ArrayList<Results> getFavoritePlaces() {
         return favoritePlaces;
     }
 
@@ -56,7 +61,7 @@ public class Profile {
         this.username = username;
     }
 
-    public void setFavoritePlaces(ArrayList<Root.Results> favoritePlaces) {
+    public void setFavoritePlaces(ArrayList<Results> favoritePlaces) {
         this.favoritePlaces = favoritePlaces;
     }
 }

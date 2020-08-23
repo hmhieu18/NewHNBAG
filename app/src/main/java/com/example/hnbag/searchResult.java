@@ -12,22 +12,18 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,7 +37,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -54,16 +49,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.xml.transform.Result;
 
 public class searchResult extends FragmentActivity implements OnMapReadyCallback {
     private Button search;
@@ -72,11 +62,11 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     private String query;
     private Location lastKnownLocation = new Location("");
     private ListView _listViewResult;
-    private ArrayList<Root.Results> _resultsList;
+    private ArrayList<Results> _resultsList;
     public ResultArrayAdapter _resultArrayAdapter;
     private boolean isDone = false;
     private ArrayList<Marker> markerArrayList = new ArrayList<>();
-    private String FAVORITE_FILE = MainActivity.profile.get_id();
+    private String FAVORITE_FILE = MainActivity.mProfile.get_id();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +140,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.marker);
         bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth() / 4, bmp.getHeight() / 4, false);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bmp);
-        for (Root.Results i : _resultsList) {
+        for (Results i : _resultsList) {
             Marker temp = mMap.addMarker(new MarkerOptions()
                     .position(i.getGeometry().getLocation().getLatLng())
                     .title(i.getName())
@@ -234,11 +224,13 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            _resultArrayAdapter = new ResultArrayAdapter(searchResult.this, R.layout.place_item, _resultsList);
-            _listViewResult.setAdapter(_resultArrayAdapter);
-            Log.d("res", Integer.valueOf(_resultsList.size()).toString());
-            Log.d("res", Integer.valueOf(_resultArrayAdapter.getCount()).toString());
-            displayMarkers();
+            if (_resultsList.size() > 0) {
+                _resultArrayAdapter = new ResultArrayAdapter(searchResult.this, R.layout.place_item, _resultsList);
+                _listViewResult.setAdapter(_resultArrayAdapter);
+                Log.d("res", Integer.valueOf(_resultsList.size()).toString());
+                Log.d("res", Integer.valueOf(_resultArrayAdapter.getCount()).toString());
+                displayMarkers();
+            }
         }
     }
 
@@ -260,7 +252,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                             Uri.parse("http://maps.google.com/maps?saddr=" +
 //                                    "10.7726045,106.6989436" +
-                                    Double.valueOf(lastKnownLocation.getLatitude()).toString() + Double.valueOf(lastKnownLocation.getLongitude()).toString() +
+                                    Double.valueOf(lastKnownLocation.getLatitude()).toString() + ',' + Double.valueOf(lastKnownLocation.getLongitude()).toString() +
                                     "&daddr=" +
                                     _resultsList.get(i).getGeometry().getLocation().getLat() + ',' + _resultsList.get(i).getGeometry().getLocation().getLng()));
                     startActivity(intent);
@@ -273,14 +265,14 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addPlaceToFavorite(Context context, int position) {
-        MainActivity.profile.favoritePlaces.add(_resultsList.get(position));
+        MainActivity.mProfile.favoritePlaces.add(_resultsList.get(position));
         saveFavoriteToFile(context);
         saveFavoriteToDatabase(context);
     }
 
     private void saveFavoriteToFile(Context context) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(MainActivity.profile.favoritePlaces);
+        String json = gson.toJson(MainActivity.mProfile.favoritePlaces);
         JsonHandling.writeToFile(json, context, FAVORITE_FILE);
     }
 
@@ -294,9 +286,9 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         protected Void doInBackground(Void... params) {
             try {
                 Gson gson = new GsonBuilder().create();
-                String jsonFavoritePlaces = gson.toJson(MainActivity.profile.favoritePlaces);
+                String jsonFavoritePlaces = gson.toJson(MainActivity.mProfile.favoritePlaces);
                 String myURL = "https://api.appery.io/rest/1/db/users/" +
-                        MainActivity.profile.get_id();
+                        MainActivity.mProfile.get_id();
                 URL obj = null;
                 obj = new URL(myURL);
 
@@ -304,7 +296,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
 
                 con.setRequestMethod("PUT");
                 con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
-                con.setRequestProperty("X-Appery-Session-Token", MainActivity.profile.getSessionToken());
+                con.setRequestProperty("X-Appery-Session-Token", MainActivity.mProfile.getSessionToken());
                 con.setRequestProperty("Content-Type", "application/json");
                 con.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());

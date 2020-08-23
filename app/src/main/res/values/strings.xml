@@ -2,4 +2,5 @@
     <string name="app_name">HNBAG</string>
     <string name="title_activity_search_result">Map</string>
     <string name="title_activity_favorite_places">Map</string>
+    <string name="databaseID">"5f3fd5f62e22d76ab9836f0a"</string>
 </resources>

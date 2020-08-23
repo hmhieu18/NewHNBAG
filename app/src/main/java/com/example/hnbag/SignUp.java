@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import java.net.URL;
 public class SignUp extends AppCompatActivity {
     private EditText username;
     private TextView password;
+    private Button signUp;
     private boolean isvalid = false;
 
     @Override
@@ -38,19 +40,28 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void initComponent() {
+        MainActivity.mProfile = new mProfile();
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
+        signUp = findViewById(R.id.login);
+        signUp.setText("SIGNUP");
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signupClicked(v);
+            }
+        });
     }
 
-    public void checkLogIn() throws IOException, JSONException {
+    public void checkSignup() throws IOException, JSONException {
         new createAccount().execute();
     }
 
-    public void logInClicked(View view) {
-        MainActivity.profile.setUsername(String.valueOf(username.getText()));
-        MainActivity.profile.setPassword(String.valueOf(password.getText()));
+    public void signupClicked(View view) {
+        MainActivity.mProfile.setUsername(String.valueOf(username.getText()));
+        MainActivity.mProfile.setPassword(String.valueOf(password.getText()));
         try {
-            checkLogIn();
+            checkSignup();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             Toast.makeText(this, "INVALID USERNAME OR PASSWORD", Toast.LENGTH_SHORT).show();
@@ -76,8 +87,8 @@ public class SignUp extends AppCompatActivity {
                 con.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 JSONObject json = new JSONObject();
-                json.put("username", MainActivity.profile.username);
-                json.put("password", MainActivity.profile.password);
+                json.put("username", MainActivity.mProfile.username);
+                json.put("password", MainActivity.mProfile.password);
                 wr.writeBytes(json.toString());
                 wr.flush();
                 wr.close();
@@ -95,8 +106,8 @@ public class SignUp extends AppCompatActivity {
                 iny.close();
                 //printing result from response
                 Log.d("response", response.toString());
-                MainActivity.profile = new Gson().fromJson(response.toString(), Profile.class);
-                if (MainActivity.profile.get_id() != null)
+                MainActivity.mProfile = new Gson().fromJson(response.toString(), mProfile.class);
+                if (MainActivity.mProfile.get_id() != null)
                     isvalid = true;
                 else isvalid = false;
             } catch (IOException |
