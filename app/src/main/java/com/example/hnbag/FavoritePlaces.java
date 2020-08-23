@@ -232,9 +232,8 @@ public class FavoritePlaces extends FragmentActivity implements OnMapReadyCallba
                 iny.close();
                 //printing result from response
                 Log.d("response", response.toString());
-                String token = MainActivity.mProfile.sessionToken;
-                MainActivity.mProfile = (new Gson()).fromJson(response.toString(), mProfile.class);
-                MainActivity.mProfile.sessionToken = token;
+                mProfile temp = (new Gson()).fromJson(response.toString(), mProfile.class);
+                MainActivity.mProfile.json_favorite_places = temp.json_favorite_places;
                 Type listType = new TypeToken<ArrayList<Results>>() {
                 }.getType();
                 if (MainActivity.mProfile.json_favorite_places != null)

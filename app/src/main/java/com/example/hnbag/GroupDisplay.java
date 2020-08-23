@@ -19,11 +19,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,7 +37,7 @@ import java.util.Arrays;
 
 public class GroupDisplay extends AppCompatActivity {
     private ListView _listViewGroup;
-    public ListGroupArrayAdapter _groupArrayAdapter;
+    public static ListGroupArrayAdapter _groupArrayAdapter;
     private Button newGroup;
     private String dialogInput;
     private int _position;
@@ -46,6 +52,7 @@ public class GroupDisplay extends AppCompatActivity {
     }
 
     private void loadGroups() {
+        new updateGroupFromDatabase().execute();
     }
 
     private void initComponent() {
@@ -86,10 +93,12 @@ public class GroupDisplay extends AppCompatActivity {
                 if (dialogInput != "" && !isAddUser) {
                     MainActivity.mProfile.listGroup.add(new Group(new String[]{MainActivity.mProfile.username}, dialogInput));
                     _groupArrayAdapter.notifyDataSetChanged();
+                    (new updateGroupToDatabase()).execute();
                 }
                 if (dialogInput != "" && isAddUser) {
                     MainActivity.mProfile.listGroup.get(_position).addUser(dialogInput);
                     _groupArrayAdapter.notifyDataSetChanged();
+                    (new updateGroupToDatabase()).execute();
                 }
             }
         });
@@ -188,8 +197,7 @@ public class GroupDisplay extends AppCompatActivity {
             if (!foodTrue) {
                 myIntent = new Intent(GroupDisplay.this, FavoritePlaces.class);
 
-            }
-            else{
+            } else {
                 myIntent = new Intent(GroupDisplay.this, FavoriteFood.class);
             }
             myIntent.putExtra("position", _position);
@@ -232,5 +240,100 @@ public class GroupDisplay extends AppCompatActivity {
                 return true;
         }
         return false;
+    }
+
+    public static class updateGroupFromDatabase extends AsyncTask<Void, Void, Void> {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                String myURL = "https://api.appery.io/rest/1/db/users/" +
+                        MainActivity.mProfile.get_id();
+                URL obj;
+                obj = new URL(myURL);
+
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                con.setRequestMethod("GET");
+                con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
+                con.setRequestProperty("X-Appery-Session-Token", MainActivity.mProfile.getSessionToken());
+
+                int responseCode = con.getResponseCode();
+                Log.d("Response Code : ", Integer.valueOf(responseCode).toString());
+                BufferedReader iny = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String output;
+                StringBuffer response = new StringBuffer();
+
+                while ((output = iny.readLine()) != null) {
+                    response.append(output);
+                }
+                iny.close();
+                //printing result from response
+                Log.d("response", response.toString());
+                mProfile temp = (new Gson()).fromJson(response.toString(), mProfile.class);
+                MainActivity.mProfile.json_group = temp.json_group;
+                Type listType = new TypeToken<ArrayList<Group>>() {
+                }.getType();
+                if (MainActivity.mProfile.json_group != null)
+                    MainActivity.mProfile.listGroup = new Gson().fromJson(JsonHandling.base64Decode(MainActivity.mProfile.json_group), listType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (_groupArrayAdapter != null)
+                _groupArrayAdapter.notifyDataSetChanged();
+        }
+    }
+
+    class updateGroupToDatabase extends AsyncTask<Void, Void, Void> {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Gson gson = new GsonBuilder().create();
+                String jsonGroup = gson.toJson(MainActivity.mProfile.listGroup);
+                String myURL = "https://api.appery.io/rest/1/db/users/" +
+                        MainActivity.mProfile.get_id();
+                URL obj = null;
+                obj = new URL(myURL);
+
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+                con.setRequestMethod("PUT");
+                con.setRequestProperty("X-Appery-Database-Id", "5f3fd5f62e22d76ab9836f0a");
+                con.setRequestProperty("X-Appery-Session-Token", MainActivity.mProfile.getSessionToken());
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                JSONObject json = new JSONObject();
+                json.put("json_group", JsonHandling.base64Encode(jsonGroup));
+                wr.writeBytes(json.toString());
+                wr.flush();
+                wr.close();
+
+                int responseCode = con.getResponseCode();
+                Log.d("Response Code : ", Integer.valueOf(responseCode).toString());
+                BufferedReader iny = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String output;
+                StringBuffer response = new StringBuffer();
+
+                while ((output = iny.readLine()) != null) {
+                    response.append(output);
+                }
+                iny.close();
+                //printing result from response
+                Log.d("response", response.toString());
+            } catch (IOException |
+                    JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

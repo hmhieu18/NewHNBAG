@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class ListGroupArrayAdapter extends ArrayAdapter<Group> {
@@ -54,8 +52,8 @@ public class ListGroupArrayAdapter extends ArrayAdapter<Group> {
         final Group group = _items.get(position);
         Bitmap bmp = BitmapFactory.decodeResource(_context.getResources(), R.drawable.group);
         imageView.setImageBitmap(bmp);
-        textView.setText(group.getGroupName());
-        textViewSub.setText(group.getUsernames().toString());
+        textView.setText("Group:" + group.getGroupName());
+        textViewSub.setText(group.getUsernamesInString());
         textViewRating.setText("");
         return convertView;
     }

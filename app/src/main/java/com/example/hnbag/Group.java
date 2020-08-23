@@ -42,6 +42,17 @@ public class Group {
         return usernames;
     }
 
+    public String getUsernamesInString() {
+        StringBuilder res = new StringBuilder();
+        res.append("Including: you");
+        for (int i = 1; i < usernames.length; i++) {
+            res.append(usernames[i]);
+            if (i != usernames.length - 1) res.append(", ");
+        }
+        return res.toString();
+    }
+
+
     public void setUsernames(String[] usernames) {
         this.usernames = usernames;
     }

@@ -121,11 +121,18 @@ public class LogIn extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             //get favorite
             if (isvalid) {
+                fetchData();
                 Intent myIntent = new Intent(LogIn.this, MainActivity.class);
                 LogIn.this.startActivity(myIntent);
                 finish();
             } else
                 Toast.makeText(LogIn.this, "INVALID USERNAME OR PASSWORD", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void fetchData() {
+        new FavoriteFood.updateFavoriteFoodsFromDatabase().execute();
+        new GroupDisplay.updateGroupFromDatabase().execute();
+        new FavoritePlaces.updateFavoritePlacesFromDatabase().execute();
     }
 }
