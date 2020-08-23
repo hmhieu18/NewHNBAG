@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
         Intent myIntent = new Intent(MainActivity.this, FavoriteFood.class);
         MainActivity.this.startActivity(myIntent);
     }
+    public void predictClicked(View view) {
+        Intent myIntent = new Intent(MainActivity.this, Prediction.class);
+        MainActivity.this.startActivity(myIntent);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

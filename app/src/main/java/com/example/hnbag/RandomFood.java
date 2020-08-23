@@ -38,15 +38,20 @@ public class RandomFood extends AppCompatActivity {
     }
 
     public void randomFoocClicked(View view) {
-        Random rn = new Random();
+        random.setEnabled(false);
+        desciption.setText("Please wait...");
+
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < foodArrayList.size(); j++) {
-                showFood(foodArrayList.get(j));
+                Random rn = new Random();
                 int range = foodArrayList.size() + 1;
                 int randomNum = rn.nextInt(range);
-                if(i==2 &&j==randomNum)
+                if (i == 2 && j == randomNum) {
+                    showFood(foodArrayList.get(randomNum));
                     break;
+                }
             }
+        random.setEnabled(true);
     }
 
     private void showFood(Food food) {
@@ -63,9 +68,7 @@ public class RandomFood extends AppCompatActivity {
         }
 
         imageView.setImageBitmap(cropImg);
-        SystemClock.sleep(50);
         desciption.setText(food.getDescription());
-
     }
 
     public void randomFindPlaceClicked(View view) {

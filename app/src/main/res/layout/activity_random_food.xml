@@ -4,8 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFC525"
+    android:dividerPadding="10dp"
     android:gravity="center"
     android:orientation="vertical"
+    android:showDividers="middle"
     android:textAlignment="center"
     tools:context=".RandomFood">
 
@@ -21,19 +24,28 @@
         android:id="@+id/dishname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/randombutton"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:text="Random" android:onClick="randomFoocClicked"/>
+        android:layout_margin="10dp"
+        android:background="@drawable/rectangle"
+        android:onClick="randomFoocClicked"
+        android:text="Random" />
 
     <Button
         android:id="@+id/randomfindplace"
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:text="Where to eat ?"
-        android:onClick="randomFindPlaceClicked"/>
+        android:layout_margin="10dp"
+        android:background="@drawable/rectangle"
+        android:lineSpacingExtra="40dp"
+        android:onClick="randomFindPlaceClicked"
+        android:text="Where to eat ?" />
 </LinearLayout>

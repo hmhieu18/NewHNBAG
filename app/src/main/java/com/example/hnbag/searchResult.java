@@ -87,7 +87,7 @@ public class searchResult extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         getLastKnownLocation();
         initComponent();
-        SystemClock.sleep(2000);
+        SystemClock.sleep(500);
         if (!query.equals("")) new retrieveData().execute();
     }
 
