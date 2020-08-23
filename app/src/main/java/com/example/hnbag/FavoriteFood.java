@@ -88,7 +88,10 @@ public class FavoriteFood extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent myIntent = new Intent(FavoriteFood.this, searchResult.class);
+                if(_position==-1)
                 myIntent.putExtra("query", String.valueOf(MainActivity.mProfile.favoriteFoods.get(position).getDescription()));
+                else
+                    myIntent.putExtra("query", String.valueOf(MainActivity.mProfile.listGroup.get(_position).commonFavoriteFoods.get(position).getDescription()));
                 FavoriteFood.this.startActivity(myIntent);
             }
         });
